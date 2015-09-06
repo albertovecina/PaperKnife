@@ -1,7 +1,7 @@
 package com.vsa.paperknifesample.model;
 
 import com.vsa.paperknife.CellElement;
-import com.vsa.paperknife.CellSource;
+import com.vsa.paperknife.DataSource;
 
 /**
  * Created by albertovecinasanchez on 4/9/15.
@@ -16,12 +16,12 @@ public class Item implements CellElement {
         this.description = description;
     }
 
-    @CellSource("Title")
+    @DataSource("Title")
     public String getTitle() {
         return title;
     }
 
-    @CellSource("Description")
+    @DataSource("Description")
     public String getDescription() {
         return description;
     }
