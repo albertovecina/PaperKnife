@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/albertovecinasanchez/workspace/workspace_PaperKnife/PaperKnife/paperknife-sample/build/intermediates/exploded-aar/PaperKnife/paperknife/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f92953bc68b042ff6f569a829ae740e24661fde4">
+        <dex dex="/Users/albertovecinasanchez/workspace/workspace_PaperKnife/PaperKnife/paperknife-sample/build/intermediates/pre-dexed/debug/classes-3203efe34039bf7945a4a111a952d80280be9bcf.jar" />
+    </item>
+
+</items>
