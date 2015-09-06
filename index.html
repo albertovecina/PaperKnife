@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Paper Knife : Decoupler tool for Android Adapters">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Paper Knife</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/albertovecina/PaperKnife">View on GitHub</a>
+
+          <h1 id="project_title">Paper Knife</h1>
+          <h2 id="project_tagline">Decoupler tool for Android Adapters</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/albertovecina/PaperKnife/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/albertovecina/PaperKnife/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="paper-knife" class="anchor" href="#paper-knife" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paper Knife</h1>
+
+<p><strong>Decoupler tool for Android Adapters</strong></p>
+
+<h2>
+<a id="how-to-use" class="anchor" href="#how-to-use" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use</h2>
+
+<ol>
+<li>
+<p>Make your model object to implements CellElement interface</p>
+
+<pre><code>public class Item implements CellElement {
+}
+</code></pre>
+</li>
+<li>
+<p>Annotate your methods to mark them as a data source, providing an id.</p>
+
+<pre><code>@DataSource("Title")
+public String getTitle() {
+    return title;
+}
+</code></pre>
+</li>
+<li>
+<p>Implements a class to handle the row views (a view holder) and implements the CellTarget interface</p>
+
+<pre><code>private static class ViewHolder implements CellViewHolder {
+} 
+</code></pre>
+</li>
+<li>
+<p>Implements methods in your cell target to manage the views, and mark them as data targets with the annotation DataTarget, sharing your data source id</p>
+
+<pre><code>@DataTarget("Title")
+public void setTitle(String title) {
+   mTextViewTitle.setText(title);
+}
+</code></pre>
+</li>
+<li>
+<p>[OPTIONAL] Implements a cell provider. The cell provider is an aditional information source. Implementes the CellProvider interface and annotate your source methods. The cell provider methods receives an instance of your model as a paramenter.</p>
+
+<pre><code>public class SamplePresenterImpl implements SamplePresenter, CellProvider {
+
+    ...
+    @DataSource("Check")
+    public boolean isOnFavouritesList(Item item) {
+        return mInteractor.getFavouritesList().contains(item);
+    }
+    ...
+
+}
+</code></pre>
+</li>
+<li>
+<p>[OPTIONAL] Implementes a listener provider. The listener provider is a class resposible to create listeners for every view in your row. 
+To create a listener provider you need to follow this steps:</p>
+
+<ol>
+<li>
+<p>Implementes the CellListenerProvider interface and mark your provider methods with the ListenerSource Annotation. The ListenerSource annotated methods must receive a CellElement as a parameter.</p>
+
+<pre><code>public class SampleActivity extends Activity implements SampleView, CellListenerProvider {
+
+    @ListenerSource("CheckBox")
+    public OnCheckedChangeListener provideCheckBoxListener(final CellElement cellElement) {
+        return new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mPresenter.onCheckChange(cellElement, isChecked);
+            }
+        };
+    }
+
+    @ListenerSource("Title")
+    public View.OnClickListener provideOnClickListener(final CellElement cellElement) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.onCheckChange(cellElement, true);
+            }
+        };
+    }
+
+}
+</code></pre>
+</li>
+<li>
+<p>Mark your target views with the annotation ListenerTarget. This views will receive the listener provided by yout CellListenerProvider.</p>
+
+<pre><code>private static class ViewHolder implements CellViewHolder {
+
+    @ListenerTarget("Title")
+    public TextView mTextViewTitle;
+    @ListenerTarget("CheckBox")
+    public CheckBox mCheckBox;
+    ...
+
+}
+</code></pre>
+</li>
+</ol>
+</li>
+<li>
+<p>Execute the data mapping in your getView method</p>
+
+<pre><code>@Override
+public View getView(int position, View convertView, ViewGroup parent) {
+    ...
+    PaperKnife.map(mList.get(position))
+                    .dataProvider(mCellDataProvider)
+                    .listenerProvider(mCellListenerProvider)
+                    .into(viewHolder);
+    return convertView;
+}
+</code></pre>
+</li>
+</ol>
+
+<h2>
+<a id="download" class="anchor" href="#download" aria-hidden="true"><span class="octicon octicon-link"></span></a>Download</h2>
+
+<p>GRADLE</p>
+
+<pre><code>compile 'com.vsa:paperknife:0.8'
+</code></pre>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<pre><code>Copyright 2013 Alberto Vecina
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Paper Knife maintained by <a href="https://github.com/albertovecina">albertovecina</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
