@@ -1,5 +1,6 @@
 package com.vsa.paperknifesample.interactor;
 
+import com.vsa.paperknife.CellProvider;
 import com.vsa.paperknifesample.model.Item;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  */
 public interface SampleInteractor {
 
+    List<Item> getFavouritesList();
     List<Item> getItems();
 
 }

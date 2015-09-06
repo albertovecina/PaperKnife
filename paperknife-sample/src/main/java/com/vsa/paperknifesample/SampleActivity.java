@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import com.vsa.paperknife.CellElement;
+import com.vsa.paperknife.CellProvider;
 import com.vsa.paperknifesample.adapter.CustomAdapter;
 
 import java.util.List;
@@ -31,8 +32,8 @@ public class SampleActivity extends Activity implements SampleView {
     }
 
     @Override
-    public void setListItems(List<? extends CellElement> items) {
-        CustomAdapter adapter = new CustomAdapter(this, items);
+    public void setListItems(List<? extends CellElement> items, CellProvider cellProvider) {
+        CustomAdapter adapter = new CustomAdapter(this, items, cellProvider);
         mListView.setAdapter(adapter);
     }
 }

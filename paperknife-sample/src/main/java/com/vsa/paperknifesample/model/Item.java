@@ -31,4 +31,14 @@ public class Item implements CellElement {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Item) {
+            Item anotherItem = (Item) o;
+            return anotherItem.getTitle().equals(title)
+                    && anotherItem.getDescription().equals(description);
+        } else {
+            return false;
+        }
+    }
 }
