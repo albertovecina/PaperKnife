@@ -1,7 +1,7 @@
 package com.vsa.paperknifesample;
 
 import com.vsa.paperknife.CellProvider;
-import com.vsa.paperknife.CellSource;
+import com.vsa.paperknife.DataSource;
 import com.vsa.paperknifesample.interactor.SampleInteractor;
 import com.vsa.paperknifesample.interactor.SampleInteractorImpl;
 import com.vsa.paperknifesample.model.Item;
@@ -18,7 +18,7 @@ public class SamplePresenterImpl implements SamplePresenter, CellProvider {
         mView = sampleView;
     }
 
-    @CellSource("Check")
+    @DataSource("Check")
     public boolean isOnFavouritesList(Item item) {
         return mInteractor.getFavouritesList().contains(item);
     }

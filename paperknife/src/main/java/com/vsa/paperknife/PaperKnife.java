@@ -27,9 +27,9 @@ public class PaperKnife {
             mElement = element;
             Method[] methods = mElement.getClass().getDeclaredMethods();
             for (Method method : methods) {
-                if(method.isAnnotationPresent(CellSource.class)) {
-                    CellSource cellSourceAnnotation = method.getAnnotation(CellSource.class);
-                    String sourceId = cellSourceAnnotation.value();
+                if(method.isAnnotationPresent(DataSource.class)) {
+                    DataSource dataSourceAnnotation = method.getAnnotation(DataSource.class);
+                    String sourceId = dataSourceAnnotation.value();
                     try {
                         method.setAccessible(true);
                         Object data = method.invoke(mElement);
@@ -49,9 +49,9 @@ public class PaperKnife {
         public Builder with(CellProvider cellProvider) {
             Method[] methods = cellProvider.getClass().getDeclaredMethods();
             for (Method method : methods) {
-                if(method.isAnnotationPresent(CellSource.class)) {
-                    CellSource cellSourceAnnotation = method.getAnnotation(CellSource.class);
-                    String sourceId = cellSourceAnnotation.value();
+                if(method.isAnnotationPresent(DataSource.class)) {
+                    DataSource dataSourceAnnotation = method.getAnnotation(DataSource.class);
+                    String sourceId = dataSourceAnnotation.value();
                     try {
                         Object data = method.invoke(cellProvider, mElement);
                         mHashMap.put(sourceId, data);
@@ -67,17 +67,17 @@ public class PaperKnife {
             return this;
         }
 
-        public void into (ViewTarget viewTarget){
+        public void into (CellTarget cellTarget){
 
-            Method[] methods = viewTarget.getClass().getMethods();
+            Method[] methods = cellTarget.getClass().getMethods();
             for (Method method : methods) {
-                if(method.isAnnotationPresent(CellTarget.class)) {
-                    CellTarget cellTargetAnnotation = method.getAnnotation(CellTarget.class);
-                    String targetId = cellTargetAnnotation.value();
+                if(method.isAnnotationPresent(DataTarget.class)) {
+                    DataTarget dataTargetAnnotation = method.getAnnotation(DataTarget.class);
+                    String targetId = dataTargetAnnotation.value();
                     try {
                         Object data = mHashMap.get(targetId);
                         if(data != null)
-                            method.invoke(viewTarget, data);
+                            method.invoke(cellTarget, data);
                         else
                             Log.e(PaperKnife.TAG, "There is no source for target: " + targetId);
                     } catch (IllegalAccessException e) {

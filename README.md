@@ -8,16 +8,16 @@
 		public class Item implements CellElement {
 		}
 
-2. Annotate your methods to mark them as a data source
+2. Annotate your methods to mark them as a data source, providing an id.
 
-		@CellSource("Title")
+		@DataSource("Title")
     	public String getTitle() {
       		return title;
     	}
  
-3. Implements a class to handle the row views (a view holder) and exteds the ViewTarget interface
+3. Implements a class to handle the row views (a view holder) and implements the CellTarget interface
 
-		private static class ViewHolder implements ViewTarget {
+		private static class ViewHolder implements CellTarget {
 		} 
 		
 4. [OPTIONAL] Implements a cell provider. The cell provider is an aditional information source. The cell provider sources receives an instance of your model as a paramenter. Implementes the CellProvider interface and annotate your source methods.
@@ -25,7 +25,7 @@
 		public class SamplePresenterImpl implements SamplePresenter, CellProvider {
 			...
 			
-		    @CellSource("Check")
+		    @DataSource("Check")
 		    public boolean isOnFavouritesList(Item item) {
 		        return mInteractor.getFavouritesList().contains(item);
 		    }
@@ -33,9 +33,9 @@
 		  	...
 		}
     	
-5. Implements methods in your view target to manage the views, and mark them as targets with the annotation CellTarget
+5. Implements methods in your cell target to manage the views, and mark them as data targets with the annotation DataTarget, sharing your data source id
 
-		@CellTarget("Title")
+		@DataTarget("Title")
 		public void setTitle(String title) {
            mTextViewTitle.setText(title);
         }

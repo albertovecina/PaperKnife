@@ -10,9 +10,9 @@ import android.widget.TextView;
 
 import com.vsa.paperknife.CellElement;
 import com.vsa.paperknife.CellProvider;
-import com.vsa.paperknife.CellTarget;
+import com.vsa.paperknife.DataTarget;
 import com.vsa.paperknife.PaperKnife;
-import com.vsa.paperknife.ViewTarget;
+import com.vsa.paperknife.CellTarget;
 import com.vsa.paperknifesample.R;
 
 import java.util.List;
@@ -53,14 +53,14 @@ public class CustomAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ViewHolder viewHolder;
+        CellHolder viewHolder;
 
         if(convertView == null) {
             convertView = mInflater.inflate(R.layout.row_item, parent, false);
-            viewHolder = new ViewHolder(convertView);
+            viewHolder = new CellHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder = (CellHolder) convertView.getTag();
         }
 
         PaperKnife.map(mList.get(position))
@@ -70,29 +70,29 @@ public class CustomAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private static class ViewHolder implements ViewTarget {
+    private static class CellHolder implements CellTarget {
 
         private TextView mTextViewTitle;
         private TextView mTextViewDescription;
         private CheckBox mCheckBox;
 
-        public ViewHolder (View view) {
+        public CellHolder(View view) {
             mTextViewTitle = (TextView) view.findViewById(R.id.txt_row_title);
             mTextViewDescription = (TextView) view.findViewById(R.id.txt_row_description);
             mCheckBox = (CheckBox) view.findViewById(R.id.check_row);
         }
 
-        @CellTarget("Title")
+        @DataTarget("Title")
         public void setTitle(String title) {
             mTextViewTitle.setText(title);
         }
 
-        @CellTarget("Description")
+        @DataTarget("Description")
         public void setDescription(String description) {
             mTextViewDescription.setText(description);
         }
 
-        @CellTarget("Check")
+        @DataTarget("Check")
         public void setCheck(boolean checked) {
             mCheckBox.setChecked(checked);
         }

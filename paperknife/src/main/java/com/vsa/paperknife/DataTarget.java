@@ -6,11 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by albertovecinasanchez on 4/9/15.
+ * Created by albertovecinasanchez on 5/9/15.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface CellSource {
+public @interface DataTarget {
 
     String value();
 
