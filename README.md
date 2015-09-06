@@ -3,7 +3,7 @@
 
 ##How to use
 
-1. Make your model object to implementes CellElement interface
+1. Make your model object to implements CellElement interface
 
 		public class Item implements CellElement {
 		}
@@ -19,22 +19,37 @@
 
 		private static class ViewHolder implements ViewTarget {
 		} 
+		
+4. [OPTIONAL] Implements a cell provider. The cell provider is an aditional information source. The cell provider sources receives an instance of your model as a paramenter. Implementes the CellProvider interface and annotate your source methods.
+
+		public class SamplePresenterImpl implements SamplePresenter, CellProvider {
+			...
+			
+		    @CellSource("Check")
+		    public boolean isOnFavouritesList(Item item) {
+		        return mInteractor.getFavouritesList().contains(item);
+		    }
+	
+		  	...
+		}
     	
-4. Implements methods in your view holder to manage the views, and mark them as targets with the annotation CellTarget
+5. Implements methods in your view target to manage the views, and mark them as targets with the annotation CellTarget
 
 		@CellTarget("Title")
 		public void setTitle(String title) {
            mTextViewTitle.setText(title);
         }
         
-5. Execute the data mapping in your getView method
+6. Execute the data mapping in your getView method
 
 		@Override
 	    public View getView(int position, View convertView, ViewGroup parent) {
 
         	....
 
-        	PaperKnife.map(mList.get(position)).into(viewHolder);
+        	PaperKnife.map(mList.get(position))
+                .with(mCellProvider)
+                .into(viewHolder);
         	return convertView;
     	}
        
