@@ -95,6 +95,11 @@ To create a listener provider you need to follow this steps:
         	return convertView;
     	}
        
+##Download
+GRADLE
+
+    compile 'com.vsa:paperknife:0.8'
+
 ##License
 
 	Copyright 2013 Alberto Vecina
