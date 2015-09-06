@@ -26,11 +26,6 @@ public class Item implements CellElement {
         return description;
     }
 
-    public int getSize() {
-        return 0;
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if(o instanceof Item) {

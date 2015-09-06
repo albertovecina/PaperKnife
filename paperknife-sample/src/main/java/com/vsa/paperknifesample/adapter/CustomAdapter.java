@@ -9,10 +9,12 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.vsa.paperknife.CellElement;
-import com.vsa.paperknife.CellProvider;
+import com.vsa.paperknife.CellListenerProvider;
+import com.vsa.paperknife.CellDataProvider;
 import com.vsa.paperknife.DataTarget;
+import com.vsa.paperknife.ListenerTarget;
 import com.vsa.paperknife.PaperKnife;
-import com.vsa.paperknife.CellTarget;
+import com.vsa.paperknife.CellViewHolder;
 import com.vsa.paperknifesample.R;
 
 import java.util.List;
@@ -25,14 +27,16 @@ public class CustomAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private List<? extends CellElement> mList;
-    private CellProvider mCellProvider;
+    private CellDataProvider mCellDataProvider;
+    private CellListenerProvider mCellListenerProvider;
 
     public CustomAdapter (Context context, List<? extends CellElement> list,
-                          CellProvider cellProvider) {
+                          CellDataProvider cellDataProvider, CellListenerProvider cellListenerProvider) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
         mList = list;
-        mCellProvider = cellProvider;
+        mCellDataProvider = cellDataProvider;
+        mCellListenerProvider = cellListenerProvider;
     }
 
     @Override
@@ -53,30 +57,33 @@ public class CustomAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        CellHolder viewHolder;
+        ViewHolder viewHolder;
 
         if(convertView == null) {
             convertView = mInflater.inflate(R.layout.row_item, parent, false);
-            viewHolder = new CellHolder(convertView);
+            viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (CellHolder) convertView.getTag();
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
         PaperKnife.map(mList.get(position))
-                .with(mCellProvider)
+                .dataProvider(mCellDataProvider)
+                .listenerProvider(mCellListenerProvider)
                 .into(viewHolder);
 
         return convertView;
     }
 
-    private static class CellHolder implements CellTarget {
+    private static class ViewHolder implements CellViewHolder {
 
-        private TextView mTextViewTitle;
+        @ListenerTarget("Title")
+        public TextView mTextViewTitle;
         private TextView mTextViewDescription;
-        private CheckBox mCheckBox;
+        @ListenerTarget("CheckBox")
+        public CheckBox mCheckBox;
 
-        public CellHolder(View view) {
+        public ViewHolder(View view) {
             mTextViewTitle = (TextView) view.findViewById(R.id.txt_row_title);
             mTextViewDescription = (TextView) view.findViewById(R.id.txt_row_description);
             mCheckBox = (CheckBox) view.findViewById(R.id.check_row);
