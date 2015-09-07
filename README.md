@@ -7,20 +7,13 @@
 
 		public class Item implements CellElement {
 		}
-
-2. Annotate your methods to mark them as a data source, providing an id.
-
-		@DataSource("Title")
-    	public String getTitle() {
-      		return title;
-    	}
  
-3. Implements a class to handle the row views (a view holder) and implements the CellViewHolder interface
+2. Implements a class to handle the row views (a view holder) and implements the CellViewHolder interface
 
 		private static class ViewHolder implements CellViewHolder {
 		} 
 
-4. Implements methods in your cell target to manage the views, and mark them as data targets with the annotation DataTarget, sharing your data source id
+3. Implements methods in your CellViewHolder to manage the views, and mark them as data targets with the annotation DataTarget and providing an id
 
 		@DataTarget("Title")
 		public void setTitle(String title) {
@@ -28,7 +21,7 @@
         }
         
 		
-5. [OPTIONAL] Implements a cell provider. The cell provider is an aditional information source. Implementes the CellProvider interface and annotate your source methods. The cell provider methods receives an instance of your model as a paramenter.
+4. Implements a cell provider. The cell provider the information source to populate de DataTarget methods. Implements the CellProvider interface and annotate your source methods sharing the DataTarget id to make the data mapping. The cell provider methods receives an instance of your model as a paramenter.
 
 		public class SamplePresenterImpl implements SamplePresenter, CellProvider {
 		
@@ -41,7 +34,7 @@
 		  	
 		}
     	
-6. [OPTIONAL] Implementes a listener provider. The listener provider is a class resposible to create listeners for every view in your row. 
+5. [OPTIONAL] Implementes a listener provider. The listener provider is a class resposible to create listeners for every view in your row. 
 To create a listener provider you need to follow this steps:
 	
 	1. Implementes the CellListenerProvider interface and mark your provider methods with the ListenerSource Annotation. The ListenerSource annotated methods must receive a CellElement as a parameter.
@@ -83,7 +76,7 @@ To create a listener provider you need to follow this steps:
 		    }
 
 
-7. Execute the data mapping in your getView method
+6. Execute the data mapping in your getView method
 
 		@Override
 	    public View getView(int position, View convertView, ViewGroup parent) {
@@ -98,7 +91,7 @@ To create a listener provider you need to follow this steps:
 ##Download
 GRADLE
 
-    compile 'com.vsa:paperknife:0.8'
+    compile 'com.vsa:paperknife:1.0'
 
 ##License
 

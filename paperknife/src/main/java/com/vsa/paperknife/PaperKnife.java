@@ -40,8 +40,9 @@ public class PaperKnife {
             for (Method method : methods) {
                 if(method.isAnnotationPresent(DataSource.class)) {
                     DataSource dataSourceAnnotation = method.getAnnotation(DataSource.class);
-                    String sourceId = dataSourceAnnotation.value();
-                    mDataProviderMap.put(sourceId, method);
+                    String[] sourceIdArray = dataSourceAnnotation.value();
+                    for(String sourceId:sourceIdArray)
+                        mDataProviderMap.put(sourceId, method);
                 }
 
             }
@@ -56,24 +57,33 @@ public class PaperKnife {
 
         public void into (CellViewHolder cellViewHolder){
 
-            Method[] methods = cellViewHolder.getClass().getMethods();
-            for (Method method : methods) {
-                if(method.isAnnotationPresent(DataTarget.class)) {
-                    DataTarget dataTargetAnnotation = method.getAnnotation(DataTarget.class);
-                    String targetId = dataTargetAnnotation.value();
-                    try {
-                        Method dataProviderMethod = mDataProviderMap.get(targetId);
-                        Object data = dataProviderMethod.invoke(mDataProvider, mElement);
-                        method.invoke(cellViewHolder, data);
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
+            if(mDataProvider != null) {
+                Method[] methods = cellViewHolder.getClass().getMethods();
+                for (Method method : methods) {
+                    if (method.isAnnotationPresent(DataTarget.class)) {
+                        DataTarget dataTargetAnnotation = method.getAnnotation(DataTarget.class);
+                        String targetId = dataTargetAnnotation.value();
+                        try {
+                            Method dataProviderMethod = mDataProviderMap.get(targetId);
+                            if (dataProviderMethod == null) {
+                                Log.e(TAG, "No data source provided for target: " + targetId);
+                            } else {
+                                Object data = dataProviderMethod.invoke(mDataProvider, mElement);
+                                method.invoke(cellViewHolder, data);
+                            }
+                        } catch (IllegalArgumentException e) {
+                            Log.e(TAG, "Invalid arguments for map: " + targetId);
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
 
+                }
+            } else {
+                Log.e(TAG, "You must provide a data provider object. Method dataProvider(CellDataProvider)");
             }
 
             if(mListenerProviderMap != null) {

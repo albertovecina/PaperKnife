@@ -29,7 +29,7 @@ public class SamplePresenterImpl implements SamplePresenter, CellDataProvider {
         return item.getDescription();
     }
 
-    @DataSource("Check")
+    @DataSource({"Check", "AnotherId"})
     public boolean isOnFavouritesList(Item item) {
         return mInteractor.getFavouritesList().contains(item);
     }
