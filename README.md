@@ -15,7 +15,7 @@
       		return title;
     	}
  
-3. Implements a class to handle the row views (a view holder) and implements the CellTarget interface
+3. Implements a class to handle the row views (a view holder) and implements the CellViewHolder interface
 
 		private static class ViewHolder implements CellViewHolder {
 		} 
