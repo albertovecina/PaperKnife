@@ -23,48 +23,25 @@ public class PaperKnife {
 
         private CellElement mElement;
         private CellListenerProvider mListenerProvider;
+        private CellDataProvider mDataProvider;
 
-        private Map<String, Object> mDataMap = new HashMap<>();
+        private Map<String, Method> mDataProviderMap;
         private Map<String, Method> mListenerProviderMap;
 
         public Builder (CellElement element) {
             mElement = element;
-            Method[] methods = mElement.getClass().getDeclaredMethods();
-            for (Method method : methods) {
-                if(method.isAnnotationPresent(DataSource.class)) {
-                    DataSource dataSourceAnnotation = method.getAnnotation(DataSource.class);
-                    String sourceId = dataSourceAnnotation.value();
-                    try {
-                        method.setAccessible(true);
-                        Object data = method.invoke(mElement);
-                        mDataMap.put(sourceId, data);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                        Log.e(PaperKnife.TAG, "Source method not accesible: " + sourceId);
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
         }
 
 
         public Builder dataProvider(CellDataProvider cellDataProvider) {
+            mDataProvider = cellDataProvider;
+            mDataProviderMap = new HashMap<>();
             Method[] methods = cellDataProvider.getClass().getDeclaredMethods();
             for (Method method : methods) {
                 if(method.isAnnotationPresent(DataSource.class)) {
                     DataSource dataSourceAnnotation = method.getAnnotation(DataSource.class);
                     String sourceId = dataSourceAnnotation.value();
-                    try {
-                        Object data = method.invoke(cellDataProvider, mElement);
-                        mDataMap.put(sourceId, data);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                        Log.e(PaperKnife.TAG, "Source method not accesible: " + sourceId);
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
+                    mDataProviderMap.put(sourceId, method);
                 }
 
             }
@@ -85,7 +62,8 @@ public class PaperKnife {
                     DataTarget dataTargetAnnotation = method.getAnnotation(DataTarget.class);
                     String targetId = dataTargetAnnotation.value();
                     try {
-                        Object data = mDataMap.get(targetId);
+                        Method dataProviderMethod = mDataProviderMap.get(targetId);
+                        Object data = dataProviderMethod.invoke(mDataProvider, mElement);
                         method.invoke(cellViewHolder, data);
                     } catch (IllegalArgumentException e) {
                         e.printStackTrace();

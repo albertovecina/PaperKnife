@@ -16,12 +16,10 @@ public class Item implements CellElement {
         this.description = description;
     }
 
-    @DataSource("Title")
     public String getTitle() {
         return title;
     }
 
-    @DataSource("Description")
     public String getDescription() {
         return description;
     }

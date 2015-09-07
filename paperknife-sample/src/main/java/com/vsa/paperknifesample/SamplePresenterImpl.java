@@ -19,6 +19,16 @@ public class SamplePresenterImpl implements SamplePresenter, CellDataProvider {
         mView = sampleView;
     }
 
+    @DataSource("Title")
+    public String getTitle(Item item) {
+        return item.getTitle();
+    }
+
+    @DataSource("Description")
+    public String getDescription(Item item) {
+        return item.getDescription();
+    }
+
     @DataSource("Check")
     public boolean isOnFavouritesList(Item item) {
         return mInteractor.getFavouritesList().contains(item);
