@@ -36,15 +36,6 @@
 </code></pre>
 </li>
 <li>
-<p>Annotate your methods to mark them as a data source, providing an id.</p>
-
-<pre><code>@DataSource("Title")
-public String getTitle() {
-    return title;
-}
-</code></pre>
-</li>
-<li>
 <p>Implements a class to handle the row views (a view holder) and implements the CellViewHolder interface</p>
 
 <pre><code>private static class ViewHolder implements CellViewHolder {
@@ -52,7 +43,7 @@ public String getTitle() {
 </code></pre>
 </li>
 <li>
-<p>Implements methods in your cell target to manage the views, and mark them as data targets with the annotation DataTarget, sharing your data source id</p>
+<p>Implements methods in your CellViewHolder to manage the views, and mark them as data targets with the annotation DataTarget and providing an id</p>
 
 <pre><code>@DataTarget("Title")
 public void setTitle(String title) {
@@ -61,7 +52,7 @@ public void setTitle(String title) {
 </code></pre>
 </li>
 <li>
-<p>[OPTIONAL] Implements a cell provider. The cell provider is an aditional information source. Implementes the CellProvider interface and annotate your source methods. The cell provider methods receives an instance of your model as a paramenter.</p>
+<p>Implements a cell provider. The cell provider the information source to populate de DataTarget methods. Implements the CellProvider interface and annotate your source methods sharing the DataTarget id to make the data mapping. The cell provider methods receives an instance of your model as a paramenter.</p>
 
 <pre><code>public class SamplePresenterImpl implements SamplePresenter, CellProvider {
 
@@ -145,7 +136,7 @@ public View getView(int position, View convertView, ViewGroup parent) {
 
 <p>GRADLE</p>
 
-<pre><code>compile 'com.vsa:paperknife:0.8'
+<pre><code>compile 'com.vsa:paperknife:1.0'
 </code></pre>
 
 <h2>
