@@ -21,14 +21,14 @@
         }
         
 		
-4. Implements a cell provider. The cell provider the information source to populate de DataTarget methods. Implements the CellProvider interface and annotate your source methods sharing the DataTarget id to make the data mapping. The cell provider methods receives an instance of your model as a paramenter.
+4. Implements a cell provider. The cell provider the information source to populate de DataTarget methods. Implements the CellDataProvider interface and annotate your source methods sharing the DataTarget id to make the data mapping. The cell provider methods receives an instance of your model as a paramenter.
 
-		public class SamplePresenterImpl implements SamplePresenter, CellProvider {
+		public class SamplePresenterImpl implements SamplePresenter, CellDataProvider {
 		
 			...
-		    @DataSource("Check")
-		    public boolean isOnFavouritesList(Item item) {
-		        return mInteractor.getFavouritesList().contains(item);
+		    @DataSource("Title")
+		    public String getTitle(Item item) {
+		        return item.getTitle();
 		    }
 		  	...
 		  	
