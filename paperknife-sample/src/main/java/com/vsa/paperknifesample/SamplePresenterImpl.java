@@ -41,8 +41,13 @@ public class SamplePresenterImpl implements SamplePresenter, CellDataProvider {
 
     @Override
     public void onCheckChange(CellElement cellElement, boolean checked) {
-        if(cellElement instanceof Item) {
-            mView.showToast(((Item) cellElement).getTitle() + checked);
+        if (cellElement instanceof Item) {
+            mView.showToast(((Item) cellElement).getTitle() + " " + checked);
         }
+    }
+
+    @Override
+    public void onNameClick(CellElement cellElement) {
+        mView.showToast(((Item) cellElement).getTitle() + " Click");
     }
 }

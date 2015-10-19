@@ -15,11 +15,31 @@ public class PaperKnife {
 
     public static final String TAG = PaperKnife.class.getSimpleName();
 
-    public static Builder map(CellElement element) {
-        return new Builder(element);
+    private PaperKnifeBuilder mPaperKnifeBuilder;
+
+    public PaperKnife(CellDataProvider cellDataProvider) {
+        this(cellDataProvider, null);
     }
 
-    public static class Builder {
+    public PaperKnife(CellDataProvider cellDataProvider,
+                      CellListenerProvider cellListenerProvider) {
+        mPaperKnifeBuilder = new PaperKnifeBuilder();
+        mPaperKnifeBuilder.dataProvider(cellDataProvider);
+        if (cellListenerProvider != null)
+            mPaperKnifeBuilder.listenerProvider(cellListenerProvider);
+    }
+
+    public void bind(CellElement element, CellViewHolder cellViewHolder) {
+        mPaperKnifeBuilder.element(element);
+        mPaperKnifeBuilder.into(cellViewHolder);
+    }
+
+    @Deprecated
+    public static PaperKnifeBuilder map(CellElement element) {
+        return new PaperKnifeBuilder(element);
+    }
+
+    public static class PaperKnifeBuilder {
 
         private CellElement mElement;
         private CellListenerProvider mListenerProvider;
@@ -28,20 +48,23 @@ public class PaperKnife {
         private Map<String, Method> mDataProviderMap;
         private Map<String, Method> mListenerProviderMap;
 
-        public Builder (CellElement element) {
+        private PaperKnifeBuilder() {
+
+        }
+
+        private PaperKnifeBuilder(CellElement element) {
             mElement = element;
         }
 
-
-        public Builder dataProvider(CellDataProvider cellDataProvider) {
+        public PaperKnifeBuilder dataProvider(CellDataProvider cellDataProvider) {
             mDataProvider = cellDataProvider;
             mDataProviderMap = new HashMap<>();
             Method[] methods = cellDataProvider.getClass().getDeclaredMethods();
             for (Method method : methods) {
-                if(method.isAnnotationPresent(DataSource.class)) {
+                if (method.isAnnotationPresent(DataSource.class)) {
                     DataSource dataSourceAnnotation = method.getAnnotation(DataSource.class);
                     String[] sourceIdArray = dataSourceAnnotation.value();
-                    for(String sourceId:sourceIdArray)
+                    for (String sourceId : sourceIdArray)
                         mDataProviderMap.put(sourceId, method);
                 }
 
@@ -49,15 +72,19 @@ public class PaperKnife {
             return this;
         }
 
-        public Builder listenerProvider(CellListenerProvider cellListenerProvider) {
+        public void element(CellElement element) {
+            mElement = element;
+        }
+
+        public PaperKnifeBuilder listenerProvider(CellListenerProvider cellListenerProvider) {
             mListenerProvider = cellListenerProvider;
             mListenerProviderMap = getListenerProviderMap(mListenerProvider);
             return this;
         }
 
-        public void into (CellViewHolder cellViewHolder){
+        public void into(CellViewHolder cellViewHolder) {
 
-            if(mDataProvider != null) {
+            if (mDataProvider != null) {
                 Method[] methods = cellViewHolder.getClass().getMethods();
                 for (Method method : methods) {
                     if (method.isAnnotationPresent(DataTarget.class)) {
@@ -86,31 +113,33 @@ public class PaperKnife {
                 Log.e(TAG, "You must provide a data provider object. Method dataProvider(CellDataProvider)");
             }
 
-            if(mListenerProviderMap != null) {
+            if (mListenerProviderMap != null) {
                 Field[] declaredFields = cellViewHolder.getClass().getDeclaredFields();
-                for(Field declaredField: declaredFields) {
-                    if(declaredField.isAnnotationPresent(ListenerTarget.class)) {
+                for (Field declaredField : declaredFields) {
+                    if (declaredField.isAnnotationPresent(ListenerTarget.class)) {
                         ListenerTarget listenerTargetAnnotation = declaredField
                                 .getAnnotation(ListenerTarget.class);
                         String listenerTargetId = listenerTargetAnnotation.value();
                         try {
                             Method listenerProviderMethod = mListenerProviderMap.get(listenerTargetId);
                             Object listenerTarget = declaredField.get(cellViewHolder);
-                            Object listener  = listenerProviderMethod.invoke(mListenerProvider, mElement);
+                            Object listener = listenerProviderMethod.invoke(mListenerProvider, mElement);
 
-                            if(listener != null) {
+                            if (listener != null) {
                                 Method listenerSetterMethod = getSetterFor(
                                         listenerProviderMethod.getReturnType(), listenerTarget);
-                                if(listenerSetterMethod != null) {
+                                if (listenerSetterMethod != null) {
                                     listenerSetterMethod.invoke(listenerTarget, listener);
                                 } else {
-                                    //TODO: WARN INCORRECT LISTENER PROVIDED
+                                    Log.e(TAG, "There is no setter for the listener provided: "
+                                            + listenerProviderMethod.getReturnType());
                                 }
                             } else {
-                                //TODO: LOG NO LISTENER MESSAGE
+                                Log.e(TAG, "Cannot get a listener from the source method: " +
+                                        listenerProviderMethod.getName());
                             }
                         } catch (IllegalAccessException e) {
-                            //TODO: WARN PRIVATE FIELDS
+                            Log.e(TAG, "Cannot access private fields.");
                             e.printStackTrace();
                         } catch (InvocationTargetException e) {
                             e.printStackTrace();
@@ -137,8 +166,8 @@ public class PaperKnife {
         private Map<String, Method> getListenerProviderMap(CellListenerProvider cellListenerProvider) {
             Map<String, Method> listenerProviderMap = new HashMap<>();
             Method[] declaredMethods = cellListenerProvider.getClass().getDeclaredMethods();
-            for(Method declaredMethod: declaredMethods) {
-                if(declaredMethod.isAnnotationPresent(ListenerSource.class)) {
+            for (Method declaredMethod : declaredMethods) {
+                if (declaredMethod.isAnnotationPresent(ListenerSource.class)) {
                     ListenerSource listenerTarget = declaredMethod
                             .getAnnotation(ListenerSource.class);
                     String listenerTargetId = listenerTarget.value();

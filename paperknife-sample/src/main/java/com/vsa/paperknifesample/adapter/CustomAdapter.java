@@ -27,16 +27,14 @@ public class CustomAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private List<? extends CellElement> mList;
-    private CellDataProvider mCellDataProvider;
-    private CellListenerProvider mCellListenerProvider;
+    private PaperKnife mPaperKnife;
 
     public CustomAdapter (Context context, List<? extends CellElement> list,
                           CellDataProvider cellDataProvider, CellListenerProvider cellListenerProvider) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
         mList = list;
-        mCellDataProvider = cellDataProvider;
-        mCellListenerProvider = cellListenerProvider;
+        mPaperKnife = new PaperKnife(cellDataProvider, cellListenerProvider);
     }
 
     @Override
@@ -67,10 +65,7 @@ public class CustomAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        PaperKnife.map(mList.get(position))
-                .dataProvider(mCellDataProvider)
-                .listenerProvider(mCellListenerProvider)
-                .into(viewHolder);
+        mPaperKnife.bind(mList.get(position), viewHolder);
 
         return convertView;
     }

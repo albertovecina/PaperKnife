@@ -63,7 +63,7 @@ public class SampleActivity extends Activity implements SampleView, CellListener
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.onCheckChange(cellElement, true);
+                mPresenter.onNameClick(cellElement);
             }
         };
     }

@@ -8,6 +8,9 @@ import com.vsa.paperknife.CellElement;
 public interface SamplePresenter {
 
     void onResume();
+
     void onCheckChange(CellElement cellElement, boolean checked);
+
+    void onNameClick(CellElement cellElement);
 
 }
