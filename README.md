@@ -76,22 +76,25 @@ To create a listener provider you need to follow this steps:
 		    }
 
 
-6. Execute the data mapping in your getView method
+6. Construct or inject a PaperKnife instance and execute the data mapping in your adapter
 
+		public CustomAdapter (Context context, List<? extends CellElement> list,
+                          CellDataProvider cellDataProvider, CellListenerProvider cellListenerProvider) {
+	        ...
+	        mPaperKnife = new PaperKnife(cellDataProvider, cellListenerProvider);
+    	}
+    	
 		@Override
 	    public View getView(int position, View convertView, ViewGroup parent) {
         	...
-			PaperKnife.map(mList.get(position))
-			                .dataProvider(mCellDataProvider)
-			                .listenerProvider(mCellListenerProvider)
-			                .into(viewHolder);
+			mPaperKnife.bind(mList.get(position), viewHolder);
         	return convertView;
     	}
        
 ##Download
 GRADLE
 
-    compile 'com.vsa:paperknife:1.0'
+    compile 'com.vsa:paperknife:1.1'
 
 ##License
 
