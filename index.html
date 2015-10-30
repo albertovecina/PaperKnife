@@ -52,7 +52,7 @@ public void setTitle(String title) {
 </code></pre>
 </li>
 <li>
-<p>Implements a cell provider. The cell provider is the information source to populate de DataTarget methods. Implements the CellDataProvider interface and annotate your source methods sharing the DataTarget id to make the data mapping. The cell provider methods receives an instance of your model as a paramenter.</p>
+<p>Implements a cell provider. The cell provider the information source to populate de DataTarget methods. Implements the CellDataProvider interface and annotate your source methods sharing the DataTarget id to make the data mapping. The cell provider methods receives an instance of your model as a paramenter.</p>
 
 <pre><code>public class SamplePresenterImpl implements SamplePresenter, CellDataProvider {
 
@@ -116,15 +116,18 @@ To create a listener provider you need to follow this steps:</p>
 </ol>
 </li>
 <li>
-<p>Execute the data mapping in your getView method</p>
+<p>Construct or inject a PaperKnife instance and execute the data mapping in your adapter</p>
 
-<pre><code>@Override
+<pre><code>public CustomAdapter (Context context, List&lt;? extends CellElement&gt; list,
+                  CellDataProvider cellDataProvider, CellListenerProvider cellListenerProvider) {
+    ...
+    mPaperKnife = new PaperKnife(cellDataProvider, cellListenerProvider);
+}
+
+@Override
 public View getView(int position, View convertView, ViewGroup parent) {
     ...
-    PaperKnife.map(mList.get(position))
-                    .dataProvider(mCellDataProvider)
-                    .listenerProvider(mCellListenerProvider)
-                    .into(viewHolder);
+    mPaperKnife.bind(mList.get(position), viewHolder);
     return convertView;
 }
 </code></pre>
@@ -136,7 +139,7 @@ public View getView(int position, View convertView, ViewGroup parent) {
 
 <p>GRADLE</p>
 
-<pre><code>compile 'com.vsa:paperknife:1.0'
+<pre><code>compile 'com.vsa:paperknife:1.1'
 </code></pre>
 
 <h2>
